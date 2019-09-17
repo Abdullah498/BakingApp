@@ -43,11 +43,7 @@ public class StepsFragment extends Fragment {
 
     private TextView descriptionTxtView;
 
-    @SuppressLint("ValidFragment")
-    public StepsFragment(Context mContext, Intent mIntent) {
-        this.mContext = mContext;
-        this.mIntent = mIntent;
-    }
+
 
     // ExoPlayer
     private final String STATE_RESUME_WINDOW = "resumeWindow";
@@ -65,9 +61,17 @@ public class StepsFragment extends Fragment {
     private long mResumePosition;
 
     Context mContext;
-    Intent mIntent;
+    String  description;
+    String videoURL;
 
     View rootView;
+
+    @SuppressLint("ValidFragment")
+    public StepsFragment(Context mContext, String description, String videoURL) {
+        this.mContext = mContext;
+        this.description=description;
+        this.videoURL=videoURL;
+    }
     public StepsFragment() {
     }
     @Nullable
@@ -76,7 +80,7 @@ public class StepsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.steps_fragment,container,false);
 
         descriptionTxtView = rootView.findViewById(R.id.tv_description);
-        descriptionTxtView.setText(mIntent.getStringExtra("description"));
+        descriptionTxtView.setText(description);
 
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
@@ -179,7 +183,7 @@ public class StepsFragment extends Fragment {
             initFullscreenDialog();
             initFullscreenButton();
 
-            String streamUrl = mIntent.getStringExtra("videoURL");
+            String streamUrl = (videoURL);
             String userAgent = Util.getUserAgent(mContext, mContext.getApplicationContext().getApplicationInfo().packageName);
             DefaultHttpDataSourceFactory httpDataSourceFactory = new DefaultHttpDataSourceFactory(userAgent, null, DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS, DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS, true);
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(mContext, null, httpDataSourceFactory);

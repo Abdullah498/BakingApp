@@ -39,7 +39,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(RecipeViewHolder holder, final int position) {
         final Recipe recipe = recipes.get(position);
         holder.recipeName.setText(recipe.getName());
 
@@ -47,6 +47,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mcontext, RecipeDetails.class);
+                intent.putExtra("position",position);
                 intent.putExtra("name",recipe.getName());
                 intent.putExtra("ingredients",recipe.getIngredients());
                 intent.putExtra("shortDescription",recipe.getShortDescription());

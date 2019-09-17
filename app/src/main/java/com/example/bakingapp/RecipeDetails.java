@@ -35,6 +35,17 @@ public class RecipeDetails extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
 
 
+        ArrayList<String> shortDescriptionList ;
+        final ArrayList<String> descriptionList ;
+        final ArrayList<String> videoURLList ;
+        final ArrayList<String> thumbnailURLList ;
+
+        shortDescriptionList = getIntent().getStringArrayListExtra("shortDescription");
+        descriptionList = getIntent().getStringArrayListExtra("description");
+        videoURLList = getIntent().getStringArrayListExtra("videoURL");
+        thumbnailURLList = getIntent().getStringArrayListExtra("thumbnailURL");
+        mPosition=getIntent().getIntExtra("position",0);
+
         if(findViewById(R.id.linear_layout_tablet) != null) {
             // This LinearLayout will only initially exist in the two-pane tablet case
             mTwoPane = true;
@@ -42,7 +53,7 @@ public class RecipeDetails extends AppCompatActivity {
 
             if(savedInstanceState == null) {
 
-                StepsFragment stepsFragment=new StepsFragment(this,intent);
+                StepsFragment stepsFragment=new StepsFragment(this,descriptionList.get(0),videoURLList.get(0));
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -60,15 +71,6 @@ public class RecipeDetails extends AppCompatActivity {
         nestedScrollView = findViewById(R.id.scrollView_ingredients);
         ingredientsTxtView = findViewById(R.id.tv_ingredients);
 
-        ArrayList<String> shortDescriptionList ;
-        final ArrayList<String> descriptionList ;
-        final ArrayList<String> videoURLList ;
-        final ArrayList<String> thumbnailURLList ;
-
-        shortDescriptionList = getIntent().getStringArrayListExtra("shortDescription");
-        descriptionList = getIntent().getStringArrayListExtra("description");
-        videoURLList = getIntent().getStringArrayListExtra("videoURL");
-        thumbnailURLList = getIntent().getStringArrayListExtra("thumbnailURL");
 
         ListView detailsList = findViewById(R.id.lv_details_list);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,shortDescriptionList){
@@ -93,12 +95,21 @@ public class RecipeDetails extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 intent = new Intent(RecipeDetails.this , StepsActivity.class);
 
-                mPosition=position;
-                intent.putExtra("description",descriptionList.get(position));
-                intent.putExtra("videoURL",videoURLList.get(position));
-                intent.putExtra("thumbnailURL",thumbnailURLList.get(position));
 
-                startActivity(intent);
+                if(!mTwoPane) {
+                    intent.putExtra("description", descriptionList.get(position));
+                    intent.putExtra("videoURL", videoURLList.get(position));
+                    intent.putExtra("thumbnailURL", thumbnailURLList.get(position));
+
+                    startActivity(intent);
+                }else {
+                    StepsFragment newFragment=new StepsFragment(RecipeDetails.this,
+                            descriptionList.get(position),videoURLList.get(position));
+                    // Replace the old head fragment with a new one
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_layout_steps, newFragment)
+                            .commit();
+                }
             }
         });
 

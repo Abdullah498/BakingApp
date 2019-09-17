@@ -58,14 +58,15 @@ public class StepsActivity extends AppCompatActivity {
         if(savedInstanceState == null) {
 
         Intent intent=getIntent();
-        StepsFragment stepsFragment=new StepsFragment(this,intent);
+        StepsFragment stepsFragment=new StepsFragment(this,
+                getIntent().getStringExtra("description"),getIntent().getStringExtra("videoURL"));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_layout_steps, stepsFragment)
                 .commit();
-        }
+    }
     }
 /*
     @Override
