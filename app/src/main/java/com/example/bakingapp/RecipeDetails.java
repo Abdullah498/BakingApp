@@ -1,6 +1,7 @@
 package com.example.bakingapp;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,10 +25,35 @@ public class RecipeDetails extends AppCompatActivity {
     private TextView ingredientsTxtView;
     private boolean shown = false;
 
+    int mPosition;
+    Intent intent;
+
+    private boolean mTwoPane;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
+
+
+        if(findViewById(R.id.linear_layout_tablet) != null) {
+            // This LinearLayout will only initially exist in the two-pane tablet case
+            mTwoPane = true;
+
+
+            if(savedInstanceState == null) {
+
+                StepsFragment stepsFragment=new StepsFragment(this,intent);
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.fragment_layout_steps, stepsFragment)
+                        .commit();
+            }
+        } else {
+            // We're in single-pane mode and displaying fragments on a phone in separate activities
+            mTwoPane = false;
+        }
 
 
         ingredientsBtn = findViewById(R.id.btn_ingredient);
@@ -64,8 +91,9 @@ public class RecipeDetails extends AppCompatActivity {
         detailsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(RecipeDetails.this , StepsActivity.class);
+                intent = new Intent(RecipeDetails.this , StepsActivity.class);
 
+                mPosition=position;
                 intent.putExtra("description",descriptionList.get(position));
                 intent.putExtra("videoURL",videoURLList.get(position));
                 intent.putExtra("thumbnailURL",thumbnailURLList.get(position));

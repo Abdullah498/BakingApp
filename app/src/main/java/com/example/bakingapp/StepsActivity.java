@@ -1,7 +1,9 @@
 package com.example.bakingapp;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.PrecomputedTextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,38 +46,28 @@ import java.util.ArrayList;
 
 public class StepsActivity extends AppCompatActivity {
 
-    private TextView descriptionTxtView;
 
-    // ExoPlayer
-    private final String STATE_RESUME_WINDOW = "resumeWindow";
-    private final String STATE_RESUME_POSITION = "resumePosition";
-    private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
-    private SimpleExoPlayerView mExoPlayerView;
-    private MediaSource mVideoSource;
-    private boolean mExoPlayerFullscreen = false;
-    private FrameLayout mFullScreenButton;
-    private ImageView mFullScreenIcon;
-    private Dialog mFullScreenDialog;
 
-    private int mResumeWindow;
-    private long mResumePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
 
-        descriptionTxtView = findViewById(R.id.tv_description);
-        descriptionTxtView.setText(getIntent().getStringExtra("description"));
+        if(savedInstanceState == null) {
 
-        if (savedInstanceState != null) {
-            mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
-            mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+        Intent intent=getIntent();
+        StepsFragment stepsFragment=new StepsFragment(this,intent);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_layout_steps, stepsFragment)
+                .commit();
         }
     }
-
+/*
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
@@ -211,6 +203,5 @@ public class StepsActivity extends AppCompatActivity {
 
         if (mFullScreenDialog != null)
             mFullScreenDialog.dismiss();
-    }
-
+    }*/
 }
