@@ -206,14 +206,14 @@ public class StepsActivity extends AppCompatActivity {
             mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
             mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
 
-            if (Util.SDK_INT <= 23) {
-                mExoPlayerView.getPlayer().release();
-            }
+            mExoPlayerView.getPlayer().release();
+
         }
 
         if (mFullScreenDialog != null)
             mFullScreenDialog.dismiss();
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -222,9 +222,8 @@ public class StepsActivity extends AppCompatActivity {
             mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
             mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
 
-            if (Util.SDK_INT <= 23) {
-                mExoPlayerView.getPlayer().release();
-            }
+            mExoPlayerView.getPlayer().release();
+
         }
 
         if (mFullScreenDialog != null)
