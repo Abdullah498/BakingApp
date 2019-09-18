@@ -1,9 +1,7 @@
 package com.example.bakingapp;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.PrecomputedTextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -46,29 +44,38 @@ import java.util.ArrayList;
 
 public class StepsActivity extends AppCompatActivity {
 
+    private TextView descriptionTxtView;
 
+    // ExoPlayer
+    private final String STATE_RESUME_WINDOW = "resumeWindow";
+    private final String STATE_RESUME_POSITION = "resumePosition";
+    private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
+    private SimpleExoPlayerView mExoPlayerView;
+    private MediaSource mVideoSource;
+    private boolean mExoPlayerFullscreen = false;
+    private FrameLayout mFullScreenButton;
+    private ImageView mFullScreenIcon;
+    private Dialog mFullScreenDialog;
 
+    private int mResumeWindow;
+    private long mResumePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
 
-        if(savedInstanceState == null) {
+        descriptionTxtView = findViewById(R.id.tv_description);
+        descriptionTxtView.setText(getIntent().getStringExtra("description"));
 
-        Intent intent=getIntent();
-        StepsFragment stepsFragment=new StepsFragment(this,
-                getIntent().getStringExtra("description"),getIntent().getStringExtra("videoURL"));
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        fragmentManager.beginTransaction()
-                .add(R.id.fragment_layout_steps, stepsFragment)
-                .commit();
+        if (savedInstanceState != null) {
+            mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
+            mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
+            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+        }
     }
-    }
-/*
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
@@ -199,10 +206,29 @@ public class StepsActivity extends AppCompatActivity {
             mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
             mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
 
-            mExoPlayerView.getPlayer().release();
+            if (Util.SDK_INT <= 23) {
+                mExoPlayerView.getPlayer().release();
+            }
         }
 
         if (mFullScreenDialog != null)
             mFullScreenDialog.dismiss();
-    }*/
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mExoPlayerView != null && mExoPlayerView.getPlayer() != null) {
+            mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
+            mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
+
+            if (Util.SDK_INT <= 23) {
+                mExoPlayerView.getPlayer().release();
+            }
+        }
+
+        if (mFullScreenDialog != null)
+            mFullScreenDialog.dismiss();
+    }
+
 }

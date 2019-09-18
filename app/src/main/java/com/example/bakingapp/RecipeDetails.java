@@ -29,6 +29,7 @@ public class RecipeDetails extends AppCompatActivity {
     Intent intent;
 
     private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,7 @@ public class RecipeDetails extends AppCompatActivity {
         final ArrayList<String> descriptionList ;
         final ArrayList<String> videoURLList ;
         final ArrayList<String> thumbnailURLList ;
+
 
         shortDescriptionList = getIntent().getStringArrayListExtra("shortDescription");
         descriptionList = getIntent().getStringArrayListExtra("description");
@@ -53,7 +55,7 @@ public class RecipeDetails extends AppCompatActivity {
 
             if(savedInstanceState == null) {
 
-                StepsFragment stepsFragment=new StepsFragment(this,descriptionList.get(0),videoURLList.get(0));
+                StepsFragment stepsFragment=new StepsFragment(this,descriptionList.get(0),videoURLList.get(0),thumbnailURLList.get(0));
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -104,7 +106,7 @@ public class RecipeDetails extends AppCompatActivity {
                     startActivity(intent);
                 }else {
                     StepsFragment newFragment=new StepsFragment(RecipeDetails.this,
-                            descriptionList.get(position),videoURLList.get(position));
+                            descriptionList.get(position),videoURLList.get(position),thumbnailURLList.get(position));
                     // Replace the old head fragment with a new one
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_layout_steps, newFragment)

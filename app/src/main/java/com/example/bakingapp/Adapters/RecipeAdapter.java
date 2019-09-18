@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bakingapp.R;
 import com.example.bakingapp.RecipeDetails;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
+    public static CharSequence widgetIngredients;
     private static final String TAG = RecipeAdapter.class.getSimpleName();
 
     ArrayList<Recipe> recipes;
@@ -46,6 +48,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                widgetIngredients=recipe.getIngredients();
+
                 Intent intent=new Intent(mcontext, RecipeDetails.class);
                 intent.putExtra("position",position);
                 intent.putExtra("name",recipe.getName());

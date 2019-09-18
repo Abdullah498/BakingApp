@@ -38,6 +38,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 public class StepsFragment extends Fragment {
 
@@ -57,20 +58,24 @@ public class StepsFragment extends Fragment {
     private ImageView mFullScreenIcon;
     private Dialog mFullScreenDialog;
 
+    ImageView imgViewThumbnailUrl;
+
     private int mResumeWindow;
     private long mResumePosition;
 
     Context mContext;
     String  description;
     String videoURL;
+    String thumbnailURL;
 
     View rootView;
 
     @SuppressLint("ValidFragment")
-    public StepsFragment(Context mContext, String description, String videoURL) {
+    public StepsFragment(Context mContext, String description, String videoURL , String thumbnailURL) {
         this.mContext = mContext;
         this.description=description;
         this.videoURL=videoURL;
+        this.thumbnailURL=thumbnailURL;
     }
     public StepsFragment() {
     }
@@ -99,7 +104,6 @@ public class StepsFragment extends Fragment {
 
         super.onSaveInstanceState(outState);
     }
-
 
     private void initFullscreenDialog() {
 
@@ -183,7 +187,14 @@ public class StepsFragment extends Fragment {
             initFullscreenDialog();
             initFullscreenButton();
 
-            String streamUrl = (videoURL);
+            String streamUrl;
+
+            if(videoURL.equals("") || videoURL==null) {
+                streamUrl= thumbnailURL;
+            }else {
+                streamUrl= videoURL;
+            }
+
             String userAgent = Util.getUserAgent(mContext, mContext.getApplicationContext().getApplicationInfo().packageName);
             DefaultHttpDataSourceFactory httpDataSourceFactory = new DefaultHttpDataSourceFactory(userAgent, null, DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS, DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS, true);
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(mContext, null, httpDataSourceFactory);
@@ -220,11 +231,28 @@ public class StepsFragment extends Fragment {
             mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
             mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
 
-            mExoPlayerView.getPlayer().release();
+            if (Util.SDK_INT <= 23) {
+                mExoPlayerView.getPlayer().release();
+            }
         }
 
         if (mFullScreenDialog != null)
             mFullScreenDialog.dismiss();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mExoPlayerView != null && mExoPlayerView.getPlayer() != null) {
+            mResumeWindow = mExoPlayerView.getPlayer().getCurrentWindowIndex();
+            mResumePosition = Math.max(0, mExoPlayerView.getPlayer().getContentPosition());
+            if (Util.SDK_INT <= 23) {
+                mExoPlayerView.getPlayer().release();
+            }
+        }
+
+        if (mFullScreenDialog != null)
+            mFullScreenDialog.dismiss();
+    }
 }

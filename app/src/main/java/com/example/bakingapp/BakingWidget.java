@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.example.bakingapp.Adapters.RecipeAdapter;
+
 /**
  * Implementation of App Widget functionality.
  */
@@ -19,7 +21,7 @@ public class BakingWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        CharSequence widgetText = "Learn delicious recipes";//context.getString(R.string.appwidget_text);
+        CharSequence widgetText = RecipeAdapter.widgetIngredients;
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -29,6 +31,7 @@ public class BakingWidget extends AppWidgetProvider {
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
+
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
